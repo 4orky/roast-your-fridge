@@ -44,4 +44,8 @@ for _verb, _route, _payload in _JOBS:
     print(_json.dumps({"verb": _verb, "http_status": _code, "body": _body}))
     if _code != 200:
         raise SystemExit("GitHub About update failed on " + _verb)
+_code, _body = _request("GET", "/repos/" + _SLUG, None)
+print(_json.dumps({"verb": "GET", "http_status": _code, "description": _body.get("description"), "homepage": _body.get("homepage"), "topics": _body.get("topics")}))
+if _code != 200 or _body.get("description") != _BLURB or _body.get("homepage") != _BOUNTY_URL or sorted(_body.get("topics") or []) != sorted("makefun ai-agents bounties growth".split()):
+    raise SystemExit("GitHub About verification mismatch after update")
 print("ABOUT REFRESHED")
